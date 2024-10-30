@@ -36,8 +36,7 @@ public class SurveyEdition {
 
 
 
-    @ManyToOne(cascade = CascadeType.ALL , fetch = FetchType.LAZY)
-    @JoinColumn(name = "survey_id")
+    @ManyToOne(cascade = CascadeType.ALL)
     private Survey survey;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "surveyEdition")

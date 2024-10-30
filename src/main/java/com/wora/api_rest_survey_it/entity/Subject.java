@@ -14,6 +14,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "subject")
 public class Subject {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -29,7 +30,6 @@ public class Subject {
     private Subject parent;
 
     @ManyToOne(fetch = FetchType.LAZY , cascade = CascadeType.ALL)
-    @JoinColumn(name = "surveyedition_id")
     private SurveyEdition surveyEdition;
 
     @OneToMany(fetch = FetchType.LAZY , mappedBy = "subject")

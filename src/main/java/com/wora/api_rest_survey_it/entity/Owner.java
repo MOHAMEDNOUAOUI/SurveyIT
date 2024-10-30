@@ -6,13 +6,16 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
-@Entity(name = "owner")
+@Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "owner")
 public class Owner {
 
     @Id
@@ -23,6 +26,6 @@ public class Owner {
     @Column(name = "name")
     private String name;
 
-    @OneToMany(fetch = FetchType.EAGER , mappedBy = "owner")
-    Set<Survey> survey = new HashSet<>();
+    @OneToMany(mappedBy = "owner",cascade = CascadeType.ALL , orphanRemoval = true)
+    private List<Survey> survey = new ArrayList<>();
 }

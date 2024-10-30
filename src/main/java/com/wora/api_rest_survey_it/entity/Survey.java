@@ -11,10 +11,11 @@ import lombok.NoArgsConstructor;
 import java.util.HashSet;
 import java.util.Set;
 
-@Entity(name = "survey")
+@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "survey")
 public class Survey {
 
     @Id
@@ -29,11 +30,10 @@ public class Survey {
     @Column(name = "description")
     private String description;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner_id")
+    @ManyToOne
     private Owner owner;
 
-    @OneToMany(mappedBy = "survey" , fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "survey")
     private Set<SurveyEdition> surveyEditions = new HashSet<>();
 
 }

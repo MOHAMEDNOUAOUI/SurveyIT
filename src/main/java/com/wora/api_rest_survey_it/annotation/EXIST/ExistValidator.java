@@ -9,6 +9,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Optional;
 
 
 @Component
@@ -18,12 +19,12 @@ public class ExistValidator implements ConstraintValidator<Exist,Long> {
     private ApplicationContext contextProvider;
 
     private Class<?> entity;
-    private Class<?> repostiroy;
+    private Class<?> repository;
 
     @Override
-    public void initialize(Exist constraintAnnotation) {
-       entity = constraintAnnotation.entity();
-       repostiroy = constraintAnnotation.repository();
+    public void initialize(Exist exist) {
+       entity = exist.entity();
+       repository = exist.repository();
     }
 
     @Override
@@ -33,11 +34,11 @@ public class ExistValidator implements ConstraintValidator<Exist,Long> {
             return false;
         }
 
-        Object repositoryBean = contextProvider.getBean(repostiroy);
+        Object repositoryBean = contextProvider.getBean(repository);
 
         try{
-            Object object = repostiroy.getMethod("findById" , Long.class).invoke(repositoryBean , aLong);
-            return object == null;
+            Optional<?> object = (Optional<?>) repository.getMethod("findById" , Long.class).invoke(repositoryBean , aLong);
+            return object.isPresent();
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
             return false;

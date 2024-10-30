@@ -31,7 +31,7 @@ public class OwnerServiceImpl implements OwnerService {
 
 
     @Override
-    public OwnerResponseCreate createOwner(OwnerCreateDTO ownerCreateDTO){
+    public OwnerResponseCreate saveOwner(OwnerCreateDTO ownerCreateDTO){
         Owner toEntityOwner = ownerMapper.toEntity(ownerCreateDTO);
         Owner owner = ownerRepository.save(toEntityOwner);
         return ownerMapper.ReturnResponseWhenCreate(owner);
@@ -41,6 +41,12 @@ public class OwnerServiceImpl implements OwnerService {
     public List<OwnerEmbdResponse> getAllOwners() {
         List<Owner> ownerList = ownerRepository.findAll();
         return ownerList.stream().map(ownerMapper::toReponseGet).toList();
+    }
+
+    @Override
+    public OwnerEmbdResponse getOwnerById(Long ownerId){
+        Owner owner = ownerRepository.findById(ownerId).get();
+        return ownerMapper.toReponseGet(owner);
     }
 
 }

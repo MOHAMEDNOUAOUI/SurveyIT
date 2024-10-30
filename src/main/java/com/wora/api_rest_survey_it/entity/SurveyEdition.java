@@ -35,10 +35,9 @@ public class SurveyEdition {
     private Integer year;
 
 
-
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private Survey survey;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "surveyEdition")
+    @OneToMany(mappedBy = "surveyEdition")
     private Set<Subject> subjects = new HashSet<>();
 }

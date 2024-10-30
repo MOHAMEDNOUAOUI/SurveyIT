@@ -8,53 +8,76 @@ import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Optional;
 
 @Component
-public class UniqueValidator implements ConstraintValidator<Unique , String> {
+public class UniqueValidator implements ConstraintValidator<Unique, String> {
 
-    @Autowired
-    private ApplicationContext applicationContext;
+    private final ApplicationContext applicationContext;
+    private Class<?> repository;
+    private String message;
+    private String fieldName;
 
-    private String column;
-    private Class<?> entityClass;
-    private Class<?> repositoryClass;
-
-    @Override
-    public void initialize(Unique unique){
-        column = unique.column();
-        entityClass =unique.entity();
-        repositoryClass = unique.repository();
+    public UniqueValidator(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
     }
 
+    @Override
+    public void initialize(Unique unique) {
+        this.repository = unique.repository();
+        this.message = unique.message();
+        this.fieldName = unique.column();
+    }
 
     @Override
-    public boolean isValid(String s, ConstraintValidatorContext context) {
-        if(s == null || s.isEmpty()){
+    public boolean isValid(String name, ConstraintValidatorContext context) {
+        if (name == null || name.trim().isEmpty()) {
+            context.disableDefaultConstraintViolation();
+            context.buildConstraintViolationWithTemplate("Name cannot be empty")
+                    .addConstraintViolation();
             return false;
         }
 
-        Object repositoryBean= applicationContext.getBean(repositoryClass);
+        try {
+            Object repositoryBean = applicationContext.getBean(repository);
 
+            Method findByNameMethod = repositoryBean.getClass().getMethod("findBy"+fieldName, String.class);
 
-        try{
-            Object result = repositoryClass.getMethod("findByName" , String.class).invoke(repositoryBean , s);
-            return result == null;
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-            return false;
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-            return false;
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            if (findByNameMethod == null) {
+                throw new IllegalStateException("Repository must have a method findByName or similar");
+            }
+
+            Object result = findByNameMethod.invoke(repositoryBean, name);
+            boolean exists;
+
+            if (result instanceof Optional<?>) {
+                exists = ((Optional<?>) result).isPresent();
+            } else {
+                exists = result != null;
+            }
+
+            if (exists) {
+                context.disableDefaultConstraintViolation();
+                context.buildConstraintViolationWithTemplate(
+                                message.replace("${validatedValue}", name))
+                        .addConstraintViolation();
+                return false;
+            }
+
+            return true;
+
+        } catch (Exception e) {
+            context.disableDefaultConstraintViolation();
+            context.buildConstraintViolationWithTemplate(
+                            "Error checking uniqueness: " + e.getMessage())
+                    .addConstraintViolation();
             return false;
         }
-
     }
-
 
 }

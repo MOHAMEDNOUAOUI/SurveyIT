@@ -1,11 +1,13 @@
 package com.wora.api_rest_survey_it.annotation.EXIST;
 
 import com.wora.api_rest_survey_it.config.ApplicationContextProvider;
+import com.wora.api_rest_survey_it.entity.Owner;
 import jakarta.validation.Constraint;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.InvocationTargetException;
@@ -17,6 +19,7 @@ public class ExistValidator implements ConstraintValidator<Exist,Long> {
 
     @Autowired
     private ApplicationContext contextProvider;
+
 
     private Class<?> entity;
     private Class<?> repository;
@@ -34,18 +37,17 @@ public class ExistValidator implements ConstraintValidator<Exist,Long> {
             return false;
         }
 
-        Object repositoryBean = contextProvider.getBean(repository);
 
         try{
-            Optional<?> object = (Optional<?>) repository.getMethod("findById" , Long.class).invoke(repositoryBean , aLong);
+            JpaRepository<?, Long> repositoryBean = (JpaRepository<?, Long>) contextProvider.getBean(repository);
+            Optional<?> object = repositoryBean.findById(aLong);
             return object.isPresent();
-        } catch (NoSuchMethodException e) {
+        }
+        catch (ClassCastException e) {
             e.printStackTrace();
             return false;
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-            return false;
-        } catch (IllegalAccessException e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
             return false;
         }

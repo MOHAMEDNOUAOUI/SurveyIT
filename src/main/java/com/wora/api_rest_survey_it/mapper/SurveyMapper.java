@@ -13,6 +13,9 @@ import org.mapstruct.Named;
 @Mapper(componentModel = "spring")
 public interface SurveyMapper {
 
+    Survey toSurvey(SurveyCreateDTO surveyCreateDTO);
 
-
+    @Mapping(source = "owner" , target = "owner")
+    @Mapping(source = "surveyEditionList" , target = "surveyEditionList")
+    SurveyResponseDTO toSurveyResponseDTO(Survey survey);
 }

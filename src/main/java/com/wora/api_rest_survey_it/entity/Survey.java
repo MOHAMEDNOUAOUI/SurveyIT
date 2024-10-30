@@ -8,7 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -33,7 +35,7 @@ public class Survey {
     @ManyToOne
     private Owner owner;
 
-    @OneToMany(mappedBy = "survey")
-    private Set<SurveyEdition> surveyEditions = new HashSet<>();
+    @OneToMany(mappedBy = "survey",cascade = CascadeType.ALL , orphanRemoval = true)
+    private List<SurveyEdition> SurveyEditionList = new ArrayList<>();
 
 }

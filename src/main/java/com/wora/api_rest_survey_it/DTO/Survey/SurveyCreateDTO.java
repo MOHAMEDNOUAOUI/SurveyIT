@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SurveyCreateDTO {
+public class    SurveyCreateDTO {
 
     @NotBlank
     @Unique(repository = SurveyRepository.class , entity = Survey.class, column = "Title")

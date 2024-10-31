@@ -12,6 +12,8 @@ import com.wora.api_rest_survey_it.service.SurveyEditionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class SurveyEditionServiceImpl implements SurveyEditionService {
 
@@ -34,5 +36,14 @@ public class SurveyEditionServiceImpl implements SurveyEditionService {
             saveSurveyEdition = surveyEditionRepository.save(surveyEdition);
         }
         return surveyEditionMapper.convertToSurveyEditionResponseDTO(saveSurveyEdition);
+    }
+
+    @Override
+    public List<SurveyEditionResponseDTO> getAllSurveyEditions() {
+        List<SurveyEdition> surveyEditionList = surveyEditionRepository.findAll();
+        if (surveyEditionList.isEmpty()){
+            throw new RuntimeException("No Surveys Edition Found");
+        }
+        return surveyEditionList.stream().map(surveyEditionMapper::convertToSurveyEditionResponseDTO).toList();
     }
 }

@@ -10,4 +10,7 @@ public interface SurveyService {
 
     SurveyResponseDTO saveSurvey(SurveyCreateDTO surveyCreateDTO);
     List<SurveyResponseDTO> getAllSurveys();
+    SurveyResponseDTO findSurveyById(Long id);
+    SurveyResponseDTO findSurveyByTitle(String title);
+    boolean deleteSurveyById(Long id);
 }

@@ -9,6 +9,7 @@ import com.wora.api_rest_survey_it.repository.OwnerRepository;
 import com.wora.api_rest_survey_it.repository.SurveyRepository;
 import com.wora.api_rest_survey_it.service.OwnerService;
 import com.wora.api_rest_survey_it.service.SurveyService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -47,6 +48,35 @@ public class SurveyServiceImpl implements SurveyService {
             throw new RuntimeException("No surveys found");
         }
         return surveys.stream().map(surveyMapper::toSurveyResponseDTO).toList();
+    }
+
+    @Override
+    public SurveyResponseDTO findSurveyById(Long id) {
+        if(surveyRepository.existsById(id)){
+            Survey survey = surveyRepository.findById(id).orElseThrow(() -> new RuntimeException("Survey not found"));
+            return surveyMapper.toSurveyResponseDTO(survey);
+        }else {
+            throw new EntityNotFoundException("Could not find this survey by the id " + id);
+        }
+    }
+
+    @Override
+    public SurveyResponseDTO findSurveyByTitle(String title) {
+        if(surveyRepository.existsByTitle(title)){
+            Survey survey = surveyRepository.findByTitle(title).get();
+            return surveyMapper.toSurveyResponseDTO(survey);
+        }else{
+            throw new EntityNotFoundException("Thie survey with the Title "+title+" does not exist");
+        }
+    }
+
+    @Override
+    public boolean deleteSurveyById(Long id) {
+        if(surveyRepository.existsById(id)){
+            surveyRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 
 

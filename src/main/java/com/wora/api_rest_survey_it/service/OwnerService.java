@@ -12,5 +12,8 @@ public interface OwnerService {
     OwnerResponseCreate saveOwner(OwnerCreateDTO ownerCreateDTO);
     List<OwnerEmbdResponse> getAllOwners();
     OwnerEmbdResponse getOwnerById(Long id);
+    OwnerEmbdResponse getOwnerByName(String name);
+    Boolean deleteOwnerById(Long id);
+    OwnerResponseCreate updateOwnerById(Long id , OwnerCreateDTO ownerCreateDTO);
 
 }

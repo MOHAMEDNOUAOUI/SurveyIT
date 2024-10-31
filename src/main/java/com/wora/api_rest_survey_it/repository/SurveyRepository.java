@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface SurveyRepository extends JpaRepository<Survey , Long> {
     Optional<Survey> findByTitle(String title);
+    boolean existsByTitle(String title);
 }

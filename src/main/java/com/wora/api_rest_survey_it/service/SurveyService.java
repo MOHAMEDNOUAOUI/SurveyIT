@@ -13,4 +13,5 @@ public interface SurveyService {
     SurveyResponseDTO findSurveyById(Long id);
     SurveyResponseDTO findSurveyByTitle(String title);
     boolean deleteSurveyById(Long id);
+    SurveyResponseDTO updateSurvey(Long id , SurveyCreateDTO surveyCreateDTO);
 }

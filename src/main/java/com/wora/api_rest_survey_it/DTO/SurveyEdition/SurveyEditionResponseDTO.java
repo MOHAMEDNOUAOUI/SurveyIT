@@ -16,6 +16,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class SurveyEditionResponseDTO {
 
+    private Long id;
     private LocalDate creationDate;
     private LocalDate startDate;
     private Integer year;

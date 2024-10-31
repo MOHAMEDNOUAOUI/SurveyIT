@@ -24,33 +24,37 @@ public class SurveyController {
     private SurveyRepository surveyRepository;
 
     @PostMapping
-    public SurveyResponseDTO creatSurvey(@RequestBody @Valid SurveyCreateDTO surveyCreateDTO){
+    public SurveyResponseDTO creatSurvey(@RequestBody @Valid SurveyCreateDTO surveyCreateDTO) {
         return surveyService.saveSurvey(surveyCreateDTO);
     }
 
     @GetMapping
-    public List<SurveyResponseDTO> getAllSurveys(){
+    public List<SurveyResponseDTO> getAllSurveys() {
         return surveyService.getAllSurveys();
     }
 
     @GetMapping("/{id}")
     public SurveyResponseDTO getSurveyById(@Exist(entity = Survey.class, repository = SurveyRepository.class)
-                                               @PathVariable("id") Long id)
-    {
+                                           @PathVariable("id") Long id) {
         return surveyService.findSurveyById(id);
     }
 
     @GetMapping("/title/{title}")
-    public SurveyResponseDTO getSurveyByTitle(@PathVariable("title") String title){
+    public SurveyResponseDTO getSurveyByTitle(@PathVariable("title") String title) {
         return surveyService.findSurveyByTitle(title);
     }
 
     @DeleteMapping("/{surveyId}")
-    public ResponseEntity<?> deleteSurvey(@PathVariable("surveyId") @Exist(entity = Survey.class, repository = SurveyRepository.class) Long id){
-        if(surveyService.deleteSurveyById(id)){
+    public ResponseEntity<?> deleteSurvey(@PathVariable("surveyId") @Exist(entity = Survey.class, repository = SurveyRepository.class) Long id) {
+        if (surveyService.deleteSurveyById(id)) {
             return ResponseEntity.ok().body("Survey deleted Succefully");
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @PutMapping("/{surveyId}")
+    public SurveyResponseDTO updateSurvey(@PathVariable("surveyId") @Exist(entity = Survey.class, repository = SurveyRepository.class) Long id, @RequestBody SurveyCreateDTO surveyCreateDTO) {
+        return surveyService.updateSurvey(id, surveyCreateDTO);
     }
 
 

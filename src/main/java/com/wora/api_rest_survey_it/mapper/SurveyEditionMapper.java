@@ -13,6 +13,8 @@ public interface SurveyEditionMapper {
     SurveyEdition toSurveyEdition(SurveyEditionCreateDTO surveyEditionCreateDTO);
 
     @Mapping(source = "survey" , target = "survey")
+//    @Mapping(source = "subjects",target = "subjects")
+//    @Mapping(source = "id" , target = "id")
     SurveyEditionResponseDTO convertToSurveyEditionResponseDTO(SurveyEdition surveyEdition);
 
 }

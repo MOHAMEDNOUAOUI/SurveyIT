@@ -65,4 +65,5 @@ public class OwnerController {
         return ownerService.updateOwnerById(id , ownerCreateDTO);
     }
 
+
 }

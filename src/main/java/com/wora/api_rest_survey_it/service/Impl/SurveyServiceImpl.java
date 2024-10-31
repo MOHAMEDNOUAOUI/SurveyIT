@@ -52,31 +52,75 @@ public class SurveyServiceImpl implements SurveyService {
 
     @Override
     public SurveyResponseDTO findSurveyById(Long id) {
-        if(surveyRepository.existsById(id)){
+        if (surveyRepository.existsById(id)) {
             Survey survey = surveyRepository.findById(id).orElseThrow(() -> new RuntimeException("Survey not found"));
             return surveyMapper.toSurveyResponseDTO(survey);
-        }else {
+        } else {
             throw new EntityNotFoundException("Could not find this survey by the id " + id);
         }
     }
 
     @Override
     public SurveyResponseDTO findSurveyByTitle(String title) {
-        if(surveyRepository.existsByTitle(title)){
+        if (surveyRepository.existsByTitle(title)) {
             Survey survey = surveyRepository.findByTitle(title).get();
             return surveyMapper.toSurveyResponseDTO(survey);
-        }else{
-            throw new EntityNotFoundException("Thie survey with the Title "+title+" does not exist");
+        } else {
+            throw new EntityNotFoundException("Thie survey with the Title " + title + " does not exist");
         }
     }
 
     @Override
     public boolean deleteSurveyById(Long id) {
-        if(surveyRepository.existsById(id)){
+        if (surveyRepository.existsById(id)) {
             surveyRepository.deleteById(id);
             return true;
         }
         return false;
+    }
+
+    @Override
+    public SurveyResponseDTO updateSurvey(Long id, SurveyCreateDTO surveyCreateDTO) {
+        if (surveyRepository.existsById(id)) {
+
+            Survey survey = surveyMapper.toSurvey(surveyCreateDTO);
+            Survey existingSurvey = surveyRepository.findById(id).get();
+
+            if (surveyCreateDTO.getOwnerId() == null && surveyCreateDTO.getTitle() == null && surveyCreateDTO.getDescription() == null) {
+                throw new RuntimeException("No data provided to be Updated");
+            }
+
+
+            if (survey.getTitle() != null) {
+                if (!survey.getTitle().equals(existingSurvey.getTitle())) {
+                    existingSurvey.setTitle(survey.getTitle());
+                }
+            }
+
+            if (survey.getDescription() != null) {
+                if (!survey.getDescription().equals(existingSurvey.getDescription())) {
+                    existingSurvey.setDescription(survey.getDescription());
+                }
+            }
+
+
+            if (surveyCreateDTO.getOwnerId() != null) {
+                if (!surveyCreateDTO.getOwnerId().equals(existingSurvey.getOwner().getId())) {
+                    Optional<Owner> newOwner = ownerRepository.findById(surveyCreateDTO.getOwnerId());
+                    if (newOwner.isPresent()) {
+                        existingSurvey.setOwner(newOwner.get());
+                    } else {
+                        throw new EntityNotFoundException("Owner with the id " + surveyCreateDTO.getOwnerId() + " not found");
+                    }
+                }
+            }
+
+            Survey updatedSurvey = surveyRepository.save(existingSurvey);
+            return surveyMapper.toSurveyResponseDTO(updatedSurvey);
+
+        } else {
+            throw new EntityNotFoundException("The Survey with the id " + id + " does not exist");
+        }
     }
 
 

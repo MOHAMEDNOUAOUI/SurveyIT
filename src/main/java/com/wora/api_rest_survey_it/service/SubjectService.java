@@ -13,4 +13,6 @@ public interface SubjectService {
 
     Object findSubjectById(Long id);
 
+    boolean deleteById(Long id);
+
 }

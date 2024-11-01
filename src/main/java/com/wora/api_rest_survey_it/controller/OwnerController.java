@@ -60,7 +60,7 @@ public class OwnerController {
     public OwnerResponseCreate updateOwnerById(
             @PathVariable("ownerId")
             @Exist(entity = Owner.class, repository = OwnerRepository.class , message = "The Owner with this id does not exist") Long id,
-            @RequestBody OwnerCreateDTO ownerCreateDTO)
+            @RequestBody @Valid OwnerCreateDTO ownerCreateDTO)
     {
         return ownerService.updateOwnerById(id , ownerCreateDTO);
     }

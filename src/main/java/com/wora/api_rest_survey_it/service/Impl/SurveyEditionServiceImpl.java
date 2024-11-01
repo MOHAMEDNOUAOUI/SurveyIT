@@ -13,7 +13,9 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Year;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SurveyEditionServiceImpl implements SurveyEditionService {
@@ -70,7 +72,59 @@ public class SurveyEditionServiceImpl implements SurveyEditionService {
 
     @Override
     public SurveyEditionResponseDTO updateSurveyEdition(Long id, SurveyEditionCreateDTO surveyEditionCreateDTO) {
-        return null;
+//        SurveyEdition createSurveyEdition = surveyEditionMapper.toSurveyEdition(surveyEditionCreateDTO);
+
+            SurveyEdition existSurveyEdition = surveyEditionRepository.findById(id)
+                    .orElseThrow(() -> new EntityNotFoundException("Survey Edition was not found with the id " + id));
+
+//            ValidateUpdateData(surveyEditionCreateDTO);
+
+
+
+
+            SurveyEdition updatedSurveyEdition = surveyEditionRepository.save(existSurveyEdition);
+            return surveyEditionMapper.convertToSurveyEditionResponseDTO(updatedSurveyEdition);
+
+
+
+    }
+
+
+//    public void ValidateUpdateData(SurveyEditionCreateDTO surveyEditionCreateDTO) {
+//        if (surveyEditionCreateDTO.getSurveyId() == null && surveyEditionCreateDTO.getCreationDate() == null
+//                &&surveyEditionCreateDTO.getYear() == null && surveyEditionCreateDTO.getStartDate() == null){
+//            throw new RuntimeException("No data Provided to be updated , no need to update");
+//        }
+//    }
+
+    public void updateSurveyEditionFields(SurveyEdition existSurveyEdition , SurveyEditionCreateDTO surveyEditionCreateDTO){
+
+        Optional.ofNullable(surveyEditionCreateDTO.getCreationDate())
+                .filter(localDate -> !localDate.equals(existSurveyEdition.getCreationDate()))
+                .ifPresent(existSurveyEdition::setCreationDate);
+
+
+//        Optional.ofNullable(surveyEditionCreateDTO.getYear())
+//                .filter(Year -> )
+
+        if (surveyEditionCreateDTO.getYear() != null && !surveyEditionCreateDTO.getYear().equals(existSurveyEdition.getYear())){
+            existSurveyEdition.setYear(surveyEditionCreateDTO.getYear());
+        }
+
+        if (surveyEditionCreateDTO.getStartDate() != null && !surveyEditionCreateDTO.getStartDate().equals(existSurveyEdition.getStartDate())){
+            existSurveyEdition.setStartDate(surveyEditionCreateDTO.getStartDate());
+        }
+
+
+        if (surveyEditionCreateDTO.getSurveyId()!= null && !surveyEditionCreateDTO.getSurveyId().equals(existSurveyEdition.getSurvey().getId())){
+            if (surveyRepository.existsById(surveyEditionCreateDTO.getSurveyId())){
+                Survey survey = surveyRepository.getReferenceById(surveyEditionCreateDTO.getSurveyId());
+                existSurveyEdition.setSurvey(survey);
+            }else{
+                throw new EntityNotFoundException("Survey with the id " + surveyEditionCreateDTO.getSurveyId() + " was not found");
+            }
+        }
+
     }
 
 

@@ -60,7 +60,7 @@ public class SurveyEditionController {
     @PutMapping("/{surveyEditionId}")
     public SurveyEditionResponseDTO updateSurveyEdition(
             @Exist(entity = SurveyEdition.class, repository = SurveyEditionRepository.class)
-            @PathVariable("surveyEditionId") Long id , @RequestBody @Valid SurveyEditionCreateDTO surveyEditionCreateDTO ) {
+            @PathVariable("surveyEditionId") Long id , @RequestBody  SurveyEditionCreateDTO surveyEditionCreateDTO ) {
 
         return surveyEditionService.updateSurveyEdition(id , surveyEditionCreateDTO);
     }

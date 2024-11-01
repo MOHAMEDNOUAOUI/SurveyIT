@@ -94,6 +94,7 @@ public class SubjectServiceImpl implements SubjectService {
 
             Subject subject = subjectRepository.findById(id).get();
 
+
             if(subject.getParent() == null){
                 System.out.println("test");
                 List<Subject> subSubjects = subjectRepository.findAllByParentId(subject.getId());
@@ -108,5 +109,21 @@ public class SubjectServiceImpl implements SubjectService {
         }else{
             throw new EntityNotFoundException("Didnt find the subject with the id " + id);
         }
+    }
+
+    @Override
+    public boolean deleteById(Long id) {
+        if(!subjectRepository.existsById(id)){
+            throw new EntityNotFoundException("Subject with the id does not exist " + id);
+        }
+        {
+        if(!subjectRepository.existsById(id)){
+            throw new EntityNotFoundException("Subject with the id does not exist " + id);
+        }
+
+
+        return false;
+    }
+
     }
 }

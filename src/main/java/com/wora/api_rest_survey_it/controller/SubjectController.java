@@ -10,6 +10,7 @@ import com.wora.api_rest_survey_it.repository.SubjectRepository;
 import com.wora.api_rest_survey_it.service.SubjectService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,6 +41,16 @@ public class SubjectController {
     @GetMapping("/{subjectId}")
     public Object getSubjectById(@PathVariable("subjectId") @Exist(entity = Subject.class, repository = SubjectRepository.class) Long id){
         return subjectService.findSubjectById(id);
+    }
+
+    @DeleteMapping("/{subjectId}")
+    public ResponseEntity<?> deleteSubjectById(@PathVariable
+                                               @Exist(entity = Subject.class, repository = SubjectRepository.class)    Long id){
+        if(subjectService.deleteById(id)){
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body("Subject Deleted Succefully");
+        }
+
+        return ResponseEntity.badRequest().build();
     }
 
 }

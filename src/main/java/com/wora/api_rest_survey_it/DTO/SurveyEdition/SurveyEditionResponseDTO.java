@@ -1,5 +1,6 @@
 package com.wora.api_rest_survey_it.DTO.SurveyEdition;
 
+import com.wora.api_rest_survey_it.DTO.Subject.embd.SubjectEmbdResponseDTO;
 import com.wora.api_rest_survey_it.DTO.Survey.embd.SurveyEmbdResponse;
 import com.wora.api_rest_survey_it.annotation.EXIST.Exist;
 import com.wora.api_rest_survey_it.entity.Survey;
@@ -10,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -21,5 +23,6 @@ public class SurveyEditionResponseDTO {
     private LocalDate startDate;
     private Integer year;
     private SurveyEmbdResponse survey;
+    private List<SubjectEmbdResponseDTO> subjects;
 
 }

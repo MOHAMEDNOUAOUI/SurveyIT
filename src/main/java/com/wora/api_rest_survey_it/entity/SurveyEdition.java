@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -38,6 +39,6 @@ public class SurveyEdition {
     @ManyToOne
     private Survey survey;
 
-    @OneToMany(mappedBy = "surveyEdition")
-    private Set<Subject> subjects = new HashSet<>();
+    @OneToMany(mappedBy = "surveyEdition" , fetch = FetchType.EAGER , cascade = CascadeType.ALL)
+    private List<Subject> subjectsList;
 }

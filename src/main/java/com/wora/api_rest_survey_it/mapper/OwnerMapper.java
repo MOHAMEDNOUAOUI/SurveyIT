@@ -10,7 +10,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface OwnerMapper {
 
-//    @Mapping(source = "name" , target = "name")
+    @Mapping(source = "name" , target = "name")
     Owner toEntity(OwnerCreateDTO ownerCreateDTO);
 
     OwnerResponseCreate ReturnResponseWhenCreate(Owner owner);

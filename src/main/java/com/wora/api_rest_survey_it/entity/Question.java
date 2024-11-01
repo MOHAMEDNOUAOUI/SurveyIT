@@ -30,10 +30,10 @@ public class Question {
 
     private Integer answerCount;
 
-    @ManyToOne(fetch = FetchType.LAZY , cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Subject subject;
 
-    @OneToMany(mappedBy = "question" , fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "question" , fetch = FetchType.LAZY , cascade = CascadeType.ALL)
     private Set<Answer> answers = new HashSet<>();
 
 }

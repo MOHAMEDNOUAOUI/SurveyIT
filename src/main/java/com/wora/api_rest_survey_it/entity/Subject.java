@@ -29,9 +29,9 @@ public class Subject {
     @JoinColumn(name = "parent_id")
     private Subject parent;
 
-    @ManyToOne(fetch = FetchType.LAZY , cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private SurveyEdition surveyEdition;
 
-    @OneToMany(fetch = FetchType.LAZY , mappedBy = "subject")
+    @OneToMany(fetch = FetchType.LAZY , mappedBy = "subject" , cascade = CascadeType.ALL)
     private Set<Question> questions = new HashSet<>();
 }

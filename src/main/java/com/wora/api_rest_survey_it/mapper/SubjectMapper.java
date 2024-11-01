@@ -2,6 +2,8 @@ package com.wora.api_rest_survey_it.mapper;
 
 import com.wora.api_rest_survey_it.DTO.Subject.SubjectCreateDTO;
 import com.wora.api_rest_survey_it.DTO.Subject.SubjectResponseDTO;
+import com.wora.api_rest_survey_it.DTO.Subject.embd.MainSubjectResponse;
+import com.wora.api_rest_survey_it.DTO.Subject.embd.SubjectEmbdResponseDTO;
 import com.wora.api_rest_survey_it.entity.Subject;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -14,5 +16,9 @@ public interface SubjectMapper {
     @Mapping(source = "parent" , target = "parent")
     @Mapping(source = "surveyEdition" , target = "surveyEdition")
     SubjectResponseDTO toResponseSubject(Subject subject);
+
+    SubjectEmbdResponseDTO toSubSubject(Subject subject);
+
+    MainSubjectResponse toMainSubjectResponse(Subject subject);
 
 }

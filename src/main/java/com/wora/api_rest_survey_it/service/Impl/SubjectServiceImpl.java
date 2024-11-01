@@ -2,6 +2,8 @@ package com.wora.api_rest_survey_it.service.Impl;
 
 import com.wora.api_rest_survey_it.DTO.Subject.SubjectCreateDTO;
 import com.wora.api_rest_survey_it.DTO.Subject.SubjectResponseDTO;
+import com.wora.api_rest_survey_it.DTO.Subject.embd.MainSubjectResponse;
+import com.wora.api_rest_survey_it.DTO.Subject.embd.SubjectEmbdResponseDTO;
 import com.wora.api_rest_survey_it.entity.Subject;
 import com.wora.api_rest_survey_it.entity.SurveyEdition;
 import com.wora.api_rest_survey_it.mapper.SubjectMapper;
@@ -12,6 +14,8 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.List;
 
 @Service
 public class SubjectServiceImpl implements SubjectService {
@@ -56,5 +60,53 @@ public class SubjectServiceImpl implements SubjectService {
         Subject saveSubject = subjectRepository.save(createdSubject);
         return subjectMapper.toResponseSubject(saveSubject);
 
+    }
+
+    @Override
+    public List<SubjectResponseDTO> findAllSubjects() {
+        List<Subject> subjectList = subjectRepository.findAll();
+        if(subjectList.isEmpty()){
+            throw new RuntimeException("No Subjects found");
+        }
+        return subjectList.stream().map(subjectMapper::toResponseSubject).toList();
+    }
+
+    @Override
+    public List<MainSubjectResponse> findAllMainSubjects() {
+        List<Subject> subjectList = subjectRepository.findAllByParentIdIsNull();
+        if(subjectList.isEmpty()){
+            throw new RuntimeException("No Subjects found");
+        }
+
+        return subjectList.stream().map(subject -> {
+            List<Subject> subSubjects = subjectRepository.findAllByParentId(subject.getId());
+            MainSubjectResponse mainSubjectResponse = subjectMapper.toMainSubjectResponse(subject);
+            List<SubjectEmbdResponseDTO> subs = subSubjects.stream().map(subjectMapper::toSubSubject).toList();
+            mainSubjectResponse.setSubSubjects(subs);
+            return mainSubjectResponse;
+        }).toList();
+
+    }
+
+    @Override
+    public Object findSubjectById(Long id) {
+        if(subjectRepository.existsById(id)){
+
+            Subject subject = subjectRepository.findById(id).get();
+
+            if(subject.getParent() == null){
+                System.out.println("test");
+                List<Subject> subSubjects = subjectRepository.findAllByParentId(subject.getId());
+                List<SubjectEmbdResponseDTO> subs = subSubjects.stream().map(subjectMapper::toSubSubject).toList();
+                MainSubjectResponse mainSubjectResponse = subjectMapper.toMainSubjectResponse(subject);
+                mainSubjectResponse.setSubSubjects(subs);
+                return mainSubjectResponse;
+            }else{
+                return subjectMapper.toResponseSubject(subject);
+            }
+
+        }else{
+            throw new EntityNotFoundException("Didnt find the subject with the id " + id);
+        }
     }
 }

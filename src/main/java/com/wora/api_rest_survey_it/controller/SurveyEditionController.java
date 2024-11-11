@@ -1,6 +1,9 @@
 package com.wora.api_rest_survey_it.controller;
 
 
+import com.wora.api_rest_survey_it.DTO.Question.QuestionResponseDTO;
+import com.wora.api_rest_survey_it.DTO.Response.ParticipateDTO;
+import com.wora.api_rest_survey_it.DTO.Response.ParticipateResponseDTO;
 import com.wora.api_rest_survey_it.DTO.Survey.embd.SurveyEmbdResponse;
 import com.wora.api_rest_survey_it.DTO.SurveyEdition.SurveyEditionCreateDTO;
 import com.wora.api_rest_survey_it.DTO.SurveyEdition.SurveyEditionResponseDTO;
@@ -63,6 +66,22 @@ public class SurveyEditionController {
             @PathVariable("surveyEditionId") Long id , @RequestBody  SurveyEditionCreateDTO surveyEditionCreateDTO ) {
 
         return surveyEditionService.updateSurveyEdition(id , surveyEditionCreateDTO);
+    }
+
+    @PostMapping("/{surveyEditionId}/participate")
+    public ResponseEntity<String> participateInSurvey(
+            @Exist(entity = SurveyEdition.class, repository = SurveyEditionRepository.class)
+            @PathVariable("surveyEditionId") Long id , @RequestBody List<ParticipateDTO> response){
+            surveyEditionService.participateInSurvey(id, response);
+            return ResponseEntity.ok("Responses processed successfully");
+    }
+
+    @GetMapping("/{surveyEditionId}/result")
+    public ParticipateResponseDTO getAllResults(
+            @Exist(entity = SurveyEdition.class, repository = SurveyEditionRepository.class)
+            @PathVariable("surveyEditionId") Long id) {
+
+        return surveyEditionService.getSurveyResult(id);
     }
 
 }

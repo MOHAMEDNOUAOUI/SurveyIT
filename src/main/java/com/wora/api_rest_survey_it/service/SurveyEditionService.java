@@ -1,5 +1,7 @@
 package com.wora.api_rest_survey_it.service;
 
+import com.wora.api_rest_survey_it.DTO.Response.ParticipateDTO;
+import com.wora.api_rest_survey_it.DTO.Response.ParticipateResponseDTO;
 import com.wora.api_rest_survey_it.DTO.Survey.SurveyCreateDTO;
 import com.wora.api_rest_survey_it.DTO.SurveyEdition.SurveyEditionCreateDTO;
 import com.wora.api_rest_survey_it.DTO.SurveyEdition.SurveyEditionResponseDTO;
@@ -20,4 +22,6 @@ public interface SurveyEditionService {
 
     SurveyEditionResponseDTO updateSurveyEdition(Long id , SurveyEditionCreateDTO surveyEditionCreateDTO);
 
+    void participateInSurvey(Long id , List<ParticipateDTO> response);
+    ParticipateResponseDTO getSurveyResult(Long id);
 }

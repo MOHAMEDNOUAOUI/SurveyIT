@@ -15,4 +15,8 @@ public interface SubjectService {
 
     boolean deleteById(Long id);
 
+
+    Object updateSubject(Long id , SubjectCreateDTO subjectCreateDTO);
+
+
 }

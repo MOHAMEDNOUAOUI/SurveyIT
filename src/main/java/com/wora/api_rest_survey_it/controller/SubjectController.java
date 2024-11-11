@@ -44,13 +44,21 @@ public class SubjectController {
     }
 
     @DeleteMapping("/{subjectId}")
-    public ResponseEntity<?> deleteSubjectById(@PathVariable
+    public ResponseEntity<?> deleteSubjectById(@PathVariable("subjectId")
                                                @Exist(entity = Subject.class, repository = SubjectRepository.class)    Long id){
         if(subjectService.deleteById(id)){
             return ResponseEntity.status(HttpStatus.ACCEPTED).body("Subject Deleted Succefully");
         }
 
         return ResponseEntity.badRequest().build();
+    }
+
+    @PatchMapping("/{subjectId}")
+    public Object updateSubject(
+            @PathVariable("subjectId")
+            @Exist(entity = Subject.class, repository = SubjectRepository.class) Long id,
+            @RequestBody SubjectCreateDTO subjectCreateDTO){
+        return subjectService.updateSubject(id , subjectCreateDTO);
     }
 
 }

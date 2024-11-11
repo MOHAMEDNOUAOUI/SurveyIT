@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -20,18 +21,17 @@ public class Subject {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-
     @NotBlank
     @Column(name = "title")
     private String title;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY , cascade = CascadeType.ALL)
     @JoinColumn(name = "parent_id")
     private Subject parent;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private SurveyEdition surveyEdition;
 
-    @OneToMany(fetch = FetchType.LAZY , mappedBy = "subject" , cascade = CascadeType.ALL)
-    private Set<Question> questions = new HashSet<>();
+    @OneToMany(fetch = FetchType.EAGER , mappedBy = "subject" , cascade = CascadeType.ALL)
+    private List<Question> questionList;
 }

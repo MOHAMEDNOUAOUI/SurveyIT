@@ -4,10 +4,14 @@ import com.wora.api_rest_survey_it.entity.Enum.QuestionType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -28,12 +32,13 @@ public class Question {
     @Column(name = "text")
     private String text;
 
-    private Integer answerCount;
+    @ColumnDefault("0")
+    private Integer answerCount = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Subject subject;
 
-    @OneToMany(mappedBy = "question" , fetch = FetchType.LAZY , cascade = CascadeType.ALL)
-    private Set<Answer> answers = new HashSet<>();
+    @OneToMany(mappedBy = "question" , fetch = FetchType.EAGER , cascade = CascadeType.ALL)
+    private List<Answer> answerList;
 
 }

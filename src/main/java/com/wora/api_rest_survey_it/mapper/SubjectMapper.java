@@ -15,6 +15,7 @@ public interface SubjectMapper {
 
     @Mapping(source = "parent" , target = "parent")
     @Mapping(source = "surveyEdition" , target = "surveyEdition")
+    @Mapping(source = "questionList" , target = "questionList")
     SubjectResponseDTO toResponseSubject(Subject subject);
 
     SubjectEmbdResponseDTO toSubSubject(Subject subject);

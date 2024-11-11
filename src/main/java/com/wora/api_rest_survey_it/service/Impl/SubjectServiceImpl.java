@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SubjectServiceImpl implements SubjectService {
@@ -65,7 +66,7 @@ public class SubjectServiceImpl implements SubjectService {
     @Override
     public List<SubjectResponseDTO> findAllSubjects() {
         List<Subject> subjectList = subjectRepository.findAll();
-        if(subjectList.isEmpty()){
+        if (subjectList.isEmpty()) {
             throw new RuntimeException("No Subjects found");
         }
         return subjectList.stream().map(subjectMapper::toResponseSubject).toList();
@@ -74,7 +75,7 @@ public class SubjectServiceImpl implements SubjectService {
     @Override
     public List<MainSubjectResponse> findAllMainSubjects() {
         List<Subject> subjectList = subjectRepository.findAllByParentIdIsNull();
-        if(subjectList.isEmpty()){
+        if (subjectList.isEmpty()) {
             throw new RuntimeException("No Subjects found");
         }
 
@@ -90,40 +91,99 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public Object findSubjectById(Long id) {
-        if(subjectRepository.existsById(id)){
+        if (subjectRepository.existsById(id)) {
 
             Subject subject = subjectRepository.findById(id).get();
 
 
-            if(subject.getParent() == null){
+            if (subject.getParent() == null) {
                 System.out.println("test");
                 List<Subject> subSubjects = subjectRepository.findAllByParentId(subject.getId());
                 List<SubjectEmbdResponseDTO> subs = subSubjects.stream().map(subjectMapper::toSubSubject).toList();
                 MainSubjectResponse mainSubjectResponse = subjectMapper.toMainSubjectResponse(subject);
                 mainSubjectResponse.setSubSubjects(subs);
                 return mainSubjectResponse;
-            }else{
+            } else {
                 return subjectMapper.toResponseSubject(subject);
             }
 
-        }else{
+        } else {
             throw new EntityNotFoundException("Didnt find the subject with the id " + id);
         }
     }
 
     @Override
     public boolean deleteById(Long id) {
-        if(!subjectRepository.existsById(id)){
-            throw new EntityNotFoundException("Subject with the id does not exist " + id);
-        }
-        {
-        if(!subjectRepository.existsById(id)){
+        if (!subjectRepository.existsById(id)) {
             throw new EntityNotFoundException("Subject with the id does not exist " + id);
         }
 
+        List<Subject> subSubjects = subjectRepository.findAllByParentId(id);
 
-        return false;
+        if (!subSubjects.isEmpty()) {
+            subSubjects.forEach(subjectRepository::delete);
+        }
+        subjectRepository.deleteById(id);
+        return true;
     }
 
+    @Override
+    public Object updateSubject(Long id, SubjectCreateDTO subjectCreateDTO) {
+
+        validateUpdateData(subjectCreateDTO);
+
+        if (!subjectRepository.existsById(id)) {
+            throw new EntityNotFoundException("Subject was not found");
+        }
+
+        Subject existingSubject = subjectRepository.getReferenceById(id);
+        Subject updatedSubject = subjectMapper.toSubject(subjectCreateDTO);
+
+        Optional.ofNullable(subjectCreateDTO.getTitle())
+                .filter(String -> !String.equals(existingSubject.getTitle()))
+                .ifPresent(existingSubject::setTitle);
+
+
+        if (subjectCreateDTO.getSurveyEditionId() != null && !subjectCreateDTO.getSurveyEditionId().equals(existingSubject.getSurveyEdition().getId())) {
+            SurveyEdition surveyEdition = surveyEditionRepository.findById(subjectCreateDTO.getSurveyEditionId())
+                    .orElseThrow(() -> new EntityNotFoundException("Survey Edition not found"));
+            updatedSubject.setSurveyEdition(surveyEdition);
+        } else {
+            updatedSubject.setSurveyEdition(existingSubject.getSurveyEdition());
+        }
+
+
+        if (existingSubject.getParent() != null) {
+            if (subjectCreateDTO.getParentId() != null && !subjectCreateDTO.getParentId().equals(existingSubject.getParent().getId())) {
+                Subject parent = subjectRepository.findById(subjectCreateDTO.getParentId())
+                        .orElseThrow(() -> new EntityNotFoundException("Parent not found"));
+
+                if (parent.getParent() != null) {
+                    throw new RuntimeException("The provided parent subject is not a main subject");
+                }
+                updatedSubject.setParent(parent);
+            } else {
+                updatedSubject.setParent(existingSubject.getParent());
+            }
+
+            updatedSubject.setQuestionList(existingSubject.getQuestionList());
+        }
+
+
+        updatedSubject.setId(id);
+        Subject savedSubject = subjectRepository.save(updatedSubject);
+        return existingSubject.getParent() == null
+                ? subjectMapper.toMainSubjectResponse(savedSubject)
+                : subjectMapper.toResponseSubject(savedSubject);
     }
+
+    private void validateUpdateData(SubjectCreateDTO subjectCreateDTO) {
+        if (subjectCreateDTO.getParentId() == null &&
+                subjectCreateDTO.getSurveyEditionId() == null &&
+                subjectCreateDTO.getTitle() == null) {
+            throw new RuntimeException("No data provided to update the subject");
+        }
+    }
+
+
 }

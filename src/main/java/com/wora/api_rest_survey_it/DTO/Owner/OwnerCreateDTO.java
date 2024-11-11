@@ -21,4 +21,5 @@ public class OwnerCreateDTO {
     @NotBlank
     @Unique(entity = Owner.class, repository = OwnerRepository.class, column = "Name")
     private String name;
+
 }

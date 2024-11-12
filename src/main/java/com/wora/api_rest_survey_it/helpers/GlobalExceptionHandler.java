@@ -1,4 +1,4 @@
-package com.wora.api_rest_survey_it.config;
+package com.wora.api_rest_survey_it.helpers;
 
 import com.wora.api_rest_survey_it.DTO.ErrorDTO;
 import jakarta.validation.ConstraintViolation;
@@ -6,7 +6,6 @@ import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

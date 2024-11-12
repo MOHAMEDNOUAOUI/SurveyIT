@@ -1,4 +1,4 @@
-package com.wora.api_rest_survey_it.config;
+package com.wora.api_rest_survey_it.helpers;
 
 import lombok.Getter;
 import org.springframework.beans.BeansException;

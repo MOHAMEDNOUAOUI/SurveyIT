@@ -179,13 +179,16 @@ public class SurveyEditionServiceImpl implements SurveyEditionService {
                 }).toList();
 
                 processMultiAnswer(question, answers);
-            } else {
+            } else if (!singleResponse.isMultiAnswer() && question.getQuestionType().equals(QuestionType.SINGLE_CHOICE)){
                 Long answerId = singleResponse.getAnswerId();
                 if (answerId == null || !answerRepository.existsById(answerId)) {
                     throw new EntityNotFoundException("The answer with ID " + answerId + " does not exist");
                 }
                 Answer answer = answerRepository.getReferenceById(answerId);
                 processSingleAnswer(question, answer);
+            }
+            else {
+                throw new RuntimeException("You cant add multiple answers to A question with type single answer , or something went wrong");
             }
 
             questionRepository.save(question);
@@ -220,7 +223,9 @@ public class SurveyEditionServiceImpl implements SurveyEditionService {
             throw new EntityNotFoundException("Survey does not exist");
         }
         SurveyEdition MainSurveyEdition = surveyEditionRepository.getReferenceById(id);
+
         ParticipateResponseDTO responseDTO = new ParticipateResponseDTO();
+
         responseDTO.setSurveyTitle(MainSurveyEdition.getSurvey().getTitle());
 
         List<ParticipateSubject> subjects = subjectService.findAllMainSubjects().stream()

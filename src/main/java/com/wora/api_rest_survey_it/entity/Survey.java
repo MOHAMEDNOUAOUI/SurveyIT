@@ -35,7 +35,7 @@ public class Survey {
     @ManyToOne
     private Owner owner;
 
-    @OneToMany(mappedBy = "survey",cascade = CascadeType.ALL , orphanRemoval = true)
+    @OneToMany(mappedBy = "survey",cascade = CascadeType.REMOVE , orphanRemoval = true)
     private List<SurveyEdition> SurveyEditionList = new ArrayList<>();
 
 }

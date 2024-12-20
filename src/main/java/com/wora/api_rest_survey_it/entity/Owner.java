@@ -26,6 +26,6 @@ public class Owner {
     @Column(name = "name")
     private String name;
 
-    @OneToMany(mappedBy = "owner",cascade = CascadeType.ALL , orphanRemoval = true)
+    @OneToMany(mappedBy = "owner",cascade = CascadeType.REMOVE , orphanRemoval = true)
     private List<Survey> survey = new ArrayList<>();
 }

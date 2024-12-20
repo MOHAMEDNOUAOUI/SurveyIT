@@ -27,6 +27,6 @@ public class AnswerCreateDTO {
     @NotNull
     private Integer selectionCount = 0;
 
-    @Exist(entity = Question.class, repository = QuestionRepository.class)
+//    @Exist(entity = Question.class, repository = QuestionRepository.class)
     private Long questionId;
 }

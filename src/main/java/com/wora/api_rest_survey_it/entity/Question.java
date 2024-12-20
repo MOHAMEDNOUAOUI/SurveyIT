@@ -38,7 +38,7 @@ public class Question {
     @ManyToOne(fetch = FetchType.LAZY)
     private Subject subject;
 
-    @OneToMany(mappedBy = "question" , fetch = FetchType.EAGER , cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "question" , fetch = FetchType.EAGER , cascade = CascadeType.REMOVE)
     private List<Answer> answerList;
 
 }

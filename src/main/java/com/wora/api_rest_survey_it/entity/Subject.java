@@ -25,13 +25,13 @@ public class Subject {
     @Column(name = "title")
     private String title;
 
-    @ManyToOne(fetch = FetchType.LAZY , cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY , cascade = CascadeType.REMOVE)
     @JoinColumn(name = "parent_id")
     private Subject parent;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private SurveyEdition surveyEdition;
 
-    @OneToMany(fetch = FetchType.EAGER , mappedBy = "subject" , cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER , mappedBy = "subject" , cascade = CascadeType.REMOVE)
     private List<Question> questionList;
 }

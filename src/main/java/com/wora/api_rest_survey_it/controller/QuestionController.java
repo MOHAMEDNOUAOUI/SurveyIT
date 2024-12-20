@@ -3,6 +3,8 @@ package com.wora.api_rest_survey_it.controller;
 
 import com.wora.api_rest_survey_it.DTO.Question.QuestionCreateDTO;
 import com.wora.api_rest_survey_it.DTO.Question.QuestionResponseDTO;
+import com.wora.api_rest_survey_it.DTO.misendsituation.DTOResponse;
+import com.wora.api_rest_survey_it.DTO.misendsituation.DTOcreateQuestionWithAnswers;
 import com.wora.api_rest_survey_it.annotation.EXIST.Exist;
 import com.wora.api_rest_survey_it.entity.Question;
 import com.wora.api_rest_survey_it.repository.QuestionRepository;
@@ -22,9 +24,14 @@ public class QuestionController {
     @Autowired
     private QuestionService questionService;
 
+//    @PostMapping
+//    public QuestionResponseDTO saveQuestion(@RequestBody @Valid QuestionCreateDTO questionCreateDTO){
+//        return questionService.createQuestion(questionCreateDTO);
+//    }
+
     @PostMapping
-    public QuestionResponseDTO saveQuestion(@RequestBody @Valid QuestionCreateDTO questionCreateDTO){
-        return questionService.createQuestion(questionCreateDTO);
+    public DTOResponse saveQuestion(@RequestBody DTOcreateQuestionWithAnswers questionWithAnswers){
+        return questionService.createWithAnswers(questionWithAnswers);
     }
 
     @GetMapping

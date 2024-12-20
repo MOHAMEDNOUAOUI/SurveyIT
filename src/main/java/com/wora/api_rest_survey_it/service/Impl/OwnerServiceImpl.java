@@ -50,7 +50,7 @@ public class OwnerServiceImpl implements OwnerService {
             Owner owner = ownerRepository.findById(ownerId).get();
             return ownerMapper.toReponseGet(owner);
         }else{
-         throw new EntityNotFoundException("Thie Owner with the id " + ownerId + " doesn not exist");
+         throw new EntityNotFoundException("This Owner with the id " + ownerId + " doesn not exist");
         }
     }
 
@@ -86,8 +86,8 @@ public class OwnerServiceImpl implements OwnerService {
             //to entity
             Owner owner = ownerMapper.toEntity(ownerCreateDTO);
             owner.setId(id);
-            Owner updatedOwner = ownerRepository.save(owner);
-            return ownerMapper.ReturnResponseWhenCreate(updatedOwner);
+            ownerRepository.save(owner);
+            return ownerMapper.ReturnResponseWhenCreate(owner);
         }else {
             throw new RuntimeException("Something happend will deleting this owner");
         }

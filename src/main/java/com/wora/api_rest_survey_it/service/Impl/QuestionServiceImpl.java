@@ -1,12 +1,19 @@
 package com.wora.api_rest_survey_it.service.Impl;
 
+import com.wora.api_rest_survey_it.DTO.Answer.AnswerResponseDTO;
 import com.wora.api_rest_survey_it.DTO.Question.QuestionCreateDTO;
 import com.wora.api_rest_survey_it.DTO.Question.QuestionResponseDTO;
+import com.wora.api_rest_survey_it.DTO.misendsituation.DTOResponse;
+import com.wora.api_rest_survey_it.DTO.misendsituation.DTOcreateQuestionWithAnswers;
+import com.wora.api_rest_survey_it.entity.Answer;
 import com.wora.api_rest_survey_it.entity.Question;
 import com.wora.api_rest_survey_it.entity.Subject;
+import com.wora.api_rest_survey_it.mapper.AnswerMapper;
 import com.wora.api_rest_survey_it.mapper.QuestionMapper;
+import com.wora.api_rest_survey_it.repository.AnswerRepository;
 import com.wora.api_rest_survey_it.repository.QuestionRepository;
 import com.wora.api_rest_survey_it.repository.SubjectRepository;
+import com.wora.api_rest_survey_it.service.AnswerService;
 import com.wora.api_rest_survey_it.service.QuestionService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +33,15 @@ public class QuestionServiceImpl implements QuestionService {
     private SubjectRepository subjectRepository;
 
     @Autowired
+    private AnswerService answerService;
+
+    @Autowired
     private QuestionMapper questionMapper;
+
+    @Autowired
+    private AnswerMapper answerMapper;
+    @Autowired
+    private AnswerRepository answerRepository;
 
     @Override
     public QuestionResponseDTO createQuestion(QuestionCreateDTO questionCreateDTO) {
@@ -104,6 +119,16 @@ public class QuestionServiceImpl implements QuestionService {
 
         Question updatedQuestion = questionRepository.save(existedQuestion);
         return questionMapper.toResponse(updatedQuestion);
+    }
+
+    @Override
+    public DTOResponse createWithAnswers(DTOcreateQuestionWithAnswers dtOcreateQuestionWithAnswers) {
+        QuestionResponseDTO questionResponseDTO = createQuestion(dtOcreateQuestionWithAnswers.getQuestion());
+        List<AnswerResponseDTO> answers = dtOcreateQuestionWithAnswers.getAnswers().stream().map(answerService::createAnswer).toList();
+        DTOResponse response = new DTOResponse();
+        response.setQuestionResponseDTO(questionResponseDTO);
+        response.setAnswerResponseDTO(answers);
+        return response;
     }
 
 

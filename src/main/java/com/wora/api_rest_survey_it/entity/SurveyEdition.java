@@ -39,6 +39,6 @@ public class SurveyEdition {
     @ManyToOne
     private Survey survey;
 
-    @OneToMany(mappedBy = "surveyEdition" , fetch = FetchType.EAGER , cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "surveyEdition" , fetch = FetchType.EAGER , cascade = CascadeType.REMOVE)
     private List<Subject> subjectsList;
 }

@@ -1,0 +1,44 @@
+pipeline {
+    agent any
+
+    stages {
+
+            stage("compilation and Tests"){
+                steps {
+                    sh 'mvn clean package'
+                    sh 'mvn test'
+                }
+            }
+
+            stage("build Docker"){
+                steps{
+                    sh 'docker compose build'
+                }
+            }
+
+            stage("Run docker"){
+                 steps{
+                    sh 'docker compose up -d'
+                 }
+            }
+
+            stage("analyse"){
+                steps{
+                    echo 'analyse code'
+                }
+            }
+
+
+            stage("deploy"){
+                steps {
+                    echo 'DEPLOY'
+                }
+            }
+    }
+    post{
+        always {
+            echo 'docker down'
+            sh 'docker compose down'
+        }
+    }
+}

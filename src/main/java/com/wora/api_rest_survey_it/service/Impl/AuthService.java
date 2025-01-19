@@ -32,44 +32,35 @@ public class AuthService {
 
 
     public String register(RegisterDTO registerDTO) {
-        Optional<Owner> user = ownerRepository.findByUsername(registerDTO.getUsername());
+        Optional<Owner> user = ownerRepository.findByName(registerDTO.getName());
         if (user.isPresent()){
             return "This user already exist";
         }
         Owner owner = authMapper.toEntity(registerDTO);
         owner.setPassword(passwordEncoder.encode(owner.getPassword()));
-        owner.setRole(Rrole.Admin);
-        try{
-            Owner saved = ownerRepository.save(owner);
-        }catch (Exception  e){
-            System.out.println(e.getMessage());
-        }
-        return "Registred succefully";
+        owner.setRole(Rrole.ROLE_Owner);
+        ownerRepository.save(owner);
+        return "Registered successfully";
     }
 
 
     public String login(LoginDTO loginDTO){
-        Owner user = ownerRepository.findByUsername(loginDTO.getUsername())
-                .orElseThrow(() -> new RuntimeException("Invalid username or password"));
+        Optional<Owner> user = ownerRepository.findByName(loginDTO.getUsername());
 
-
-        if (!passwordEncoder.matches(loginDTO.getPassword() , user.getPassword())){
-            throw new RuntimeException("invalid Password");
+        if (user.isEmpty()){
+            return "the user does exist";
         }
-
+        if (!passwordEncoder.matches(loginDTO.getPassword() , user.get().getPassword())){
+            return "Password is not correct";
+        }
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        user.getUsername(),
+                        user.get().getName(),
                         loginDTO.getPassword(),
-                        List.of(new SimpleGrantedAuthority(user.getRole().name()))
+                        List.of(new SimpleGrantedAuthority(user.get().getRole().name()))
                 )
         );
-
-
-        String token =  jwtTokenUtil.generateToken(authentication);
-
-        System.out.println(token);
-        return token;
+        return  jwtTokenUtil.generateToken(authentication);
     }
 
 }

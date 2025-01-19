@@ -12,8 +12,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RegisterDTO {
     @NotBlank
-    private String username;
+    private String name;
     @NotBlank
     private String password;
-    private Rrole role = Rrole.Admin;
+
+    private Rrole role = Rrole.ROLE_Owner;
 }

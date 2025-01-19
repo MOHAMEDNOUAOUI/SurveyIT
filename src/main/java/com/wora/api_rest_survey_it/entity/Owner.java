@@ -1,5 +1,6 @@
 package com.wora.api_rest_survey_it.entity;
 
+import com.wora.api_rest_survey_it.entity.Enum.Rrole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -25,6 +26,11 @@ public class Owner {
     @NotBlank
     @Column(name = "name")
     private String name;
+
+    private String password;
+
+    @Enumerated(EnumType.STRING)
+    private Rrole role;
 
     @OneToMany(mappedBy = "owner",cascade = CascadeType.REMOVE , orphanRemoval = true)
     private List<Survey> survey = new ArrayList<>();

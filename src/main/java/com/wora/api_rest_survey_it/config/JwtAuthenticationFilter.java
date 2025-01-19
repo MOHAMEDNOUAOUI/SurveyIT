@@ -33,7 +33,7 @@
                         String username = jwtTokenUtil.getUsernameFromToken(token);
                         Authentication authentication = jwtTokenUtil.getAuthentication(token, customUserDetailService);
                         SecurityContextHolder.getContext().setAuthentication(authentication);
-                        logger.info("Successfully authenticated user: {}");
+                        logger.info("Successfully authenticated user: {" + authentication.getAuthorities() +   "}");
                     }
                 } catch (Exception e) {
                     logger.error("Failed to authenticate token: {}");

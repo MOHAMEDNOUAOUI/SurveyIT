@@ -7,7 +7,7 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface AuthMapper {
-    @Mapping(source = "username" , target = "username")
+    @Mapping(source = "name" , target = "name")
     @Mapping(source = "password" , target = "password")
     @Mapping(source = "role" ,target = "role")
     Owner toEntity(RegisterDTO registerDTO);
